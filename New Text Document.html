@@ -126,9 +126,9 @@
   <footer>With all my love,<br>— Yours always 💌</footer>
 </div>
 
-<!-- Audio -->
+<!-- Audio (local file) -->
 <audio id="bgm" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7a58c9c3f6.mp3" type="audio/mpeg">
+  <source src="love_song.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -138,19 +138,17 @@ const hint = document.getElementById('hint');
 const bgm = document.getElementById('bgm');
 let opened = false;
 
+// Floating heart generator
 function createHeart() {
   const heart = document.createElement('div');
   heart.classList.add('heart');
   heart.style.left = Math.random() * 100 + 'vw';
   heart.style.width = heart.style.height = (10 + Math.random()*20) + 'px';
-  heart.style.animationDuration = (4 + Math.random()*4) + 's';
-  heart.style.transition = `transform ${4 + Math.random()*4}s linear, opacity ${4 + Math.random()*4}s linear`;
+  heart.style.transition = 'transform 5s linear, opacity 5s linear';
   document.body.appendChild(heart);
 
   let top = window.innerHeight;
-  let left = parseFloat(heart.style.left);
   const speed = 1 + Math.random()*2;
-
   function animate() {
     top -= speed;
     heart.style.top = top + 'px';
@@ -167,15 +165,16 @@ envelope.addEventListener('click', () => {
   if(opened) return;
   opened = true;
 
-  // Show letter
   envelope.style.display = 'none';
   hint.style.display = 'none';
   letter.classList.add('visible');
 
-  // Play music
-  bgm.play().catch(e => console.log('Autoplay blocked', e));
+  // Play music reliably
+  bgm.play().catch(() => {
+    alert("Click again to start the music!");
+  });
 
-  // Start creating floating hearts continuously
+  // Continuously create hearts
   setInterval(createHeart, 400);
 });
 </script>
