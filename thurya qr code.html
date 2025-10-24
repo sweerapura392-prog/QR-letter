@@ -12,7 +12,6 @@
     font-family: 'Dancing Script', cursive;
     background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1280&q=80') no-repeat center center fixed;
     background-size: cover;
-    margin: 0;
     color: #fff;
     overflow: hidden;
     height: 100vh;
@@ -34,7 +33,7 @@
     transition: transform 0.4s ease;
     z-index: 10;
   }
-  .envelope:active { transform: scale(0.98); }
+  .envelope:hover { transform: scale(1.05); }
   .envelope::before {
     content: '';
     position: absolute;
@@ -62,9 +61,9 @@
     top: 20%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: rgba(0,0,0,0.65);
-    padding: 25px;
-    width: 90vw;
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    width: 80vw;
     max-width: 600px;
     border-radius: 20px;
     box-shadow: 0 0 25px rgba(255,192,203,0.6);
@@ -79,19 +78,11 @@
     top: 50%;
   }
 
-  h1 { font-size: 2.4em; margin-bottom:10px; color:#ffcad4; text-shadow:0 0 10px #ff7b9c; }
-  p { font-size: 1.4em; line-height:1.6; color:#ffeaf4; }
-  footer { margin-top:35px; font-size:1.2em; color:#ffd6e8; }
+  h1 { font-size: 3em; margin-bottom:10px; color:#ffcad4; text-shadow:0 0 10px #ff7b9c; }
+  p { font-size: 1.6em; line-height:1.6; color:#ffeaf4; }
+  footer { margin-top:40px; font-size:1.2em; color:#ffd6e8; }
 
-  #hint { 
-    margin-top: 25px; 
-    font-size:1.3em; 
-    color:#fff; 
-    animation: blink 1.2s infinite; 
-    z-index:5; 
-    text-align:center; 
-    padding:0 10px;
-  }
+  #hint { margin-top: 30px; font-size:1.3em; color:#fff; animation: blink 1.2s infinite; z-index:5; }
   @keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0.5;} }
 
   /* Hearts */
@@ -102,7 +93,6 @@
     background: red;
     transform: rotate(45deg);
     opacity: 0.8;
-    pointer-events: none;
   }
   .heart::before,
   .heart::after {
@@ -115,18 +105,13 @@
   }
   .heart::before { top: -10px; left: 0; }
   .heart::after { left: 10px; top: 0; }
-
-  @media (max-width:600px) {
-    h1 { font-size: 1.8em; }
-    p { font-size: 1.1em; }
-  }
 </style>
 </head>
 <body>
 
 <!-- Envelope -->
 <div class="envelope" id="envelope"></div>
-<div id="hint">💌 Tap the envelope to open your letter 💌</div>
+<div id="hint">💌 Click the envelope to open your letter 💌</div>
 
 <!-- Letter -->
 <div class="letter" id="letter">
@@ -141,8 +126,8 @@
   <footer>With all my love,<br>— Yours always 💌</footer>
 </div>
 
-<!-- Local Audio -->
-<audio id="bgm" loop playsinline preload="auto">
+<!-- Audio (local file) -->
+<audio id="bgm" loop>
   <source src="love_song.mp3" type="audio/mpeg">
 </audio>
 
@@ -153,7 +138,7 @@ const hint = document.getElementById('hint');
 const bgm = document.getElementById('bgm');
 let opened = false;
 
-// Heart generator
+// Floating heart generator
 function createHeart() {
   const heart = document.createElement('div');
   heart.classList.add('heart');
@@ -167,7 +152,6 @@ function createHeart() {
   function animate() {
     top -= speed;
     heart.style.top = top + 'px';
-    heart.style.opacity = Math.max(0, top / window.innerHeight);
     if(top + parseFloat(heart.style.height) < 0){
       heart.remove();
     } else {
@@ -177,26 +161,21 @@ function createHeart() {
   animate();
 }
 
-function openLetter() {
+envelope.addEventListener('click', () => {
   if(opened) return;
   opened = true;
+
   envelope.style.display = 'none';
   hint.style.display = 'none';
   letter.classList.add('visible');
 
-  // Safe music start
+  // Play music reliably
   bgm.play().catch(() => {
-    alert("Tap once more to start the music 🎵");
+    alert("Click again to start the music!");
   });
 
+  // Continuously create hearts
   setInterval(createHeart, 400);
-}
-
-// Touch and click support
-envelope.addEventListener('click', openLetter);
-envelope.addEventListener('touchstart', (e) => {
-  e.preventDefault(); // Prevent double trigger
-  openLetter();
 });
 </script>
 
