@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter to Sheril Minradha 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Dancing Script', cursive;
+    background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1280&q=80') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  /* Envelope */
+  .envelope {
+    position: relative;
+    width: 220px;
+    height: 140px;
+    background: #ffb6c1;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(255, 192, 203, 0.6);
+    cursor: pointer;
+    transition: transform 0.4s ease;
+    z-index: 10;
+  }
+  .envelope:active { transform: scale(0.98); }
+  .envelope::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 0;
+    border-left: 110px solid transparent;
+    border-right: 110px solid transparent;
+    border-bottom: 70px solid #ff9eb5;
+    border-radius: 10px 10px 0 0;
+  }
+  .envelope::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 0;
+    border-left: 110px solid transparent;
+    border-right: 110px solid transparent;
+    border-top: 70px solid #ff9eb5;
+    border-radius: 0 0 10px 10px;
+  }
+
+  /* Letter */
+  .letter {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(0,0,0,0.65);
+    padding: 25px;
+    width: 90vw;
+    max-width: 600px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255,192,203,0.6);
+    opacity: 0;
+    text-align: center;
+    transition: all 1s ease;
+    z-index: 10;
+  }
+  .letter.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    top: 50%;
+  }
+
+  h1 { font-size: 2.4em; margin-bottom:10px; color:#ffcad4; text-shadow:0 0 10px #ff7b9c; }
+  p { font-size: 1.4em; line-height:1.6; color:#ffeaf4; }
+  footer { margin-top:35px; font-size:1.2em; color:#ffd6e8; }
+
+  #hint { 
+    margin-top: 25px; 
+    font-size:1.3em; 
+    color:#fff; 
+    animation: blink 1.2s infinite; 
+    z-index:5; 
+    text-align:center; 
+    padding:0 10px;
+  }
+  @keyframes blink { 0%,50%,100% {opacity:1;} 25%,75% {opacity:0.5;} }
+
+  /* Hearts */
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    transform: rotate(45deg);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+  }
+  .heart::before { top: -10px; left: 0; }
+  .heart::after { left: 10px; top: 0; }
+
+  @media (max-width:600px) {
+    h1 { font-size: 1.8em; }
+    p { font-size: 1.1em; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Envelope -->
+<div class="envelope" id="envelope"></div>
+<div id="hint">💌 Tap the envelope to open your letter 💌</div>
+
+<!-- Letter -->
+<div class="letter" id="letter">
+  <h1>To My Dearest Sheril Minradha 💖</h1>
+  <p>
+    From the moment I met you, my world became brighter.<br>
+    Every smile of yours lights up my heart in ways words can’t describe.<br>
+    These flowers carry a piece of my love,<br>
+    but this message carries my soul — forever yours.<br>
+    You are my today and all of my tomorrows. 🌹
+  </p>
+  <footer>With all my love,<br>— Yours always 💌</footer>
+</div>
+
+<!-- Local Audio -->
+<audio id="bgm" loop playsinline preload="auto">
+  <source src="love_song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const envelope = document.getElementById('envelope');
+const letter = document.getElementById('letter');
+const hint = document.getElementById('hint');
+const bgm = document.getElementById('bgm');
+let opened = false;
+
+// Heart generator
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.classList.add('heart');
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.width = heart.style.height = (10 + Math.random()*20) + 'px';
+  heart.style.transition = 'transform 5s linear, opacity 5s linear';
+  document.body.appendChild(heart);
+
+  let top = window.innerHeight;
+  const speed = 1 + Math.random()*2;
+  function animate() {
+    top -= speed;
+    heart.style.top = top + 'px';
+    heart.style.opacity = Math.max(0, top / window.innerHeight);
+    if(top + parseFloat(heart.style.height) < 0){
+      heart.remove();
+    } else {
+      requestAnimationFrame(animate);
+    }
+  }
+  animate();
+}
+
+function openLetter() {
+  if(opened) return;
+  opened = true;
+  envelope.style.display = 'none';
+  hint.style.display = 'none';
+  letter.classList.add('visible');
+
+  // Safe music start
+  bgm.play().catch(() => {
+    alert("Tap once more to start the music 🎵");
+  });
+
+  setInterval(createHeart, 400);
+}
+
+// Touch and click support
+envelope.addEventListener('click', openLetter);
+envelope.addEventListener('touchstart', (e) => {
+  e.preventDefault(); // Prevent double trigger
+  openLetter();
+});
+</script>
+
+</body>
+</html>
