@@ -105,6 +105,34 @@
   }
   .heart::before { top: -10px; left: 0; }
   .heart::after { left: 10px; top: 0; }
+
+  /* Music button (only shows if needed) */
+  #musicBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffb6c1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,192,203,0.7);
+    display: none;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+  }
+  #musicBtn:hover {
+    background: #ff99aa;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
 </style>
 </head>
 <body>
@@ -126,6 +154,9 @@
   <footer>With all my love,<br>— Yours always 💌</footer>
 </div>
 
+<!-- Music Button -->
+<button id="musicBtn">🎵 Tap to Play Music</button>
+
 <!-- Audio (local file) -->
 <audio id="bgm" loop>
   <source src="love_song.mp3" type="audio/mpeg">
@@ -136,6 +167,7 @@ const envelope = document.getElementById('envelope');
 const letter = document.getElementById('letter');
 const hint = document.getElementById('hint');
 const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicBtn');
 let opened = false;
 
 // Floating heart generator
@@ -144,6 +176,7 @@ function createHeart() {
   heart.classList.add('heart');
   heart.style.left = Math.random() * 100 + 'vw';
   heart.style.width = heart.style.height = (10 + Math.random()*20) + 'px';
+  heart.style.top = window.innerHeight + 'px';
   heart.style.transition = 'transform 5s linear, opacity 5s linear';
   document.body.appendChild(heart);
 
@@ -153,7 +186,8 @@ function createHeart() {
     top -= speed;
     heart.style.top = top + 'px';
     if(top + parseFloat(heart.style.height) < 0){
-      heart.remove();
+      heart.style.opacity = 0;
+      setTimeout(() => heart.remove(), 1000);
     } else {
       requestAnimationFrame(animate);
     }
@@ -169,13 +203,19 @@ envelope.addEventListener('click', () => {
   hint.style.display = 'none';
   letter.classList.add('visible');
 
-  // Play music reliably
+  // Try to play music
   bgm.play().catch(() => {
-    alert("Click again to start the music!");
+    // Show music button if autoplay blocked
+    musicBtn.style.display = 'block';
   });
 
-  // Continuously create hearts
+  // Floating hearts forever
   setInterval(createHeart, 400);
+});
+
+musicBtn.addEventListener('click', () => {
+  bgm.play();
+  musicBtn.style.display = 'none';
 });
 </script>
 
